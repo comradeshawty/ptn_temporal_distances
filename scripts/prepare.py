@@ -10,7 +10,7 @@ from gtfspy.gtfs import GTFS
 from gtfspy import import_gtfs
 
 from settings import IMPORTED_DATABASE_PATH, RAW_GTFS_ZIP_PATH, SWIMMING_HALL_ID_PREFIX
-
+CSV_FILE = 'pois_gdf.csv'
 def add_extra_locations_to_stops_table():
     g = GTFS(IMPORTED_DATABASE_PATH)
     for location in EXTRA_LOCATIONS:
@@ -24,9 +24,9 @@ def add_swimming_halls_to_stops_table():
     g = GTFS(IMPORTED_DATABASE_PATH)
     halls = get_swimming_hall_data()
     for hall in halls:
-        lat = hall['latitude']
-        lon = hall['longitude']
-        name = hall['name_en'].replace(" ", "_")
+        lat = hall['LATITUDE']
+        lon = hall['LONGITUDE']
+        name = hall['LOCATION_NAME'].replace(" ", "_")
         id = SWIMMING_HALL_ID_PREFIX + name + "_" + str(hall['id'])
         g.add_stop(id, "NULL", name, "NULL", lat, lon)
 
@@ -62,7 +62,7 @@ def download_large_file(url, local_filename):
     return local_filename
 
 def get_swimming_hall_data():
-    fname = os.path.join(DATA_DIRECTORY, "swimming_halls_json.pickle")
+    fname = os.path.join(DATA_DIRECTORY, CSV_FILE)
     return get_data_or_compute(fname, _fetch_swimming_hall_data)
 
 def import_database(force=False):
